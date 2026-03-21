@@ -46,6 +46,7 @@ public class CameraController : MonoBehaviour
             targetIndex = (targetIndex - 1 + target.Length) % target.Length;
             actualTarget = target[targetIndex];
         }
+        Debug.Log($"Cámara sigue a: {actualTarget.name}");
     }
     private void HandleInput()
     {
