@@ -586,7 +586,7 @@ MonoBehaviour:
   simulator: {fileID: 1889867630}
   rotationSpeed: 5
   zoomSpeed: 5
-  minDistance: 1
+  minDistance: 0.75
   maxDistance: 80
   target:
   - {fileID: 1279828211}
@@ -2524,8 +2524,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a592f95c480e74bae6b30ba2cf7173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 100
-  stepsPerUpdate: 5
+  timeScale: 1
+  stepsPerUpdate: 40
   planets:
   - {fileID: 1279828212}
   - {fileID: 1259260380}

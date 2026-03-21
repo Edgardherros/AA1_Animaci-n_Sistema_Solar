@@ -9,7 +9,7 @@ public class GravitySimulator : MonoBehaviour
     [Range(1f, 365)]
     public float timeScale = 1f;
 
-    [Range(1, 20)]
+    [Range(1, 40)]
     public int stepsPerUpdate = 5;
 
     [SerializeField] private CelestialSimulator[] planets; // Los astros que participan en la simulación
