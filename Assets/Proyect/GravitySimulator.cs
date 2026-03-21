@@ -12,7 +12,7 @@ public class GravitySimulator : MonoBehaviour
     [Range(1, 20)]
     public int stepsPerUpdate = 5;
 
-    [SerializeField] private CelestialSimulator[] planets;
+    [SerializeField] private CelestialSimulator[] planets; // Los astros que participan en la simulación
 
     void Start()
     {
