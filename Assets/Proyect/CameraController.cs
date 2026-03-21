@@ -9,20 +9,19 @@ public class CameraController : MonoBehaviour
     public float rotationSpeed = 5f;
 
     [Header("Zoom")]
-    public float zoomSpeed   = 5f;
+    public float zoomSpeed = 5f;
     public float minDistance = 1f;
     public float maxDistance = 80f;
 
     [Header("Seguimiento")]
-    public Transform[] target; // cuerpo que sigue la cámara
-    private Transform actualTarget;
+    public Transform[] target; 
+    private Transform actualTarget; // planeta que sigue la cámara
     private int targetIndex = 0;
 
     // Estado interno
-    private float distance    = 15f;
-    private float yaw         = 0f;
-    private float pitch       = 30f;
-    private Vector3 offset;
+    private float distance = 15f;
+    private float yaw = 0f;
+    private float pitch = 30f;
 
     void LateUpdate()
     {
@@ -36,17 +35,16 @@ public class CameraController : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.D) && actualTarget != target[targetIndex])
+        if(Input.GetKeyDown(KeyCode.D))
         {
             targetIndex = (targetIndex + 1) % target.Length;
             actualTarget = target[targetIndex];
         }
-        if(Input.GetKeyDown(KeyCode.A) && actualTarget != target[targetIndex])
+        if(Input.GetKeyDown(KeyCode.A))
         {
             targetIndex = (targetIndex - 1 + target.Length) % target.Length;
             actualTarget = target[targetIndex];
         }
-        Debug.Log($"Cámara sigue a: {actualTarget.name}");
     }
     private void HandleInput()
     {
@@ -68,6 +66,7 @@ public class CameraController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
                 simulator.timeScale = Mathf.Min(simulator.timeScale * 2f, 100f);
+
             if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
                 simulator.timeScale = Mathf.Max(simulator.timeScale * 0.5f, 0.1f);
         }
@@ -77,23 +76,11 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
 
-        // Posición de la cámara en coordenadas esféricas alrededor del target
+        // Posición de la cámara en 3D alrededor del target
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
         Vector3 dir = rotation * Vector3.back;
         transform.position = actualTarget.position + dir * distance;
         transform.LookAt(actualTarget.position);
     }
 
-    // GUI de información
-    void OnGUI()
-    {
-        GUI.color = Color.white;
-        GUILayout.BeginArea(new Rect(10, 10, 280, 120));
-        GUILayout.Label("<b>Sistema Solar - Simulación</b>", new GUIStyle(GUI.skin.label) { richText = true, fontSize = 14 });
-        if (simulator != null)
-            GUILayout.Label($"Velocidad: {simulator.timeScale:F1}× (días/s)  [+/-]");
-        GUILayout.Label("Clic derecho + arrastrar: rotar");
-        GUILayout.Label("Rueda ratón: zoom");
-        GUILayout.EndArea();
-    }
 }
