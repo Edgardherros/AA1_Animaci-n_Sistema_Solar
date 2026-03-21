@@ -7,12 +7,11 @@ public class GravitySimulator : MonoBehaviour
 
     [Header("Simulación")]
     [Range(1f, 365)]
-    public float timeScale = 1f;
-
-    [Range(1, 40)]
-    public int stepsPerUpdate = 5;
+    public int timeScale = 1;
+    private int stepsPerUpdate = 20;
 
     [SerializeField] private CelestialSimulator[] planets; // Los astros que participan en la simulación
+    [SerializeField] private UIElements ui;
 
     void Start()
     {
@@ -34,6 +33,7 @@ public class GravitySimulator : MonoBehaviour
 
             foreach (var body in planets) body.UpdateVelocity(subDt);
         }
+        if (ui != null) ui.UpdateTime(dt);
     }
 
     private void ComputeGravity()
@@ -57,5 +57,10 @@ public class GravitySimulator : MonoBehaviour
                 b.AddForce(-force);
             }
         }
+    }
+    public void ChangeSimulationSpeed(float newTimeScale)
+    {
+        timeScale = (int)newTimeScale;
+        ui.UpdateSpeedTime(newTimeScale);
     }
 }

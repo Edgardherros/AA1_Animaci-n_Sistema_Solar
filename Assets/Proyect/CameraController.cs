@@ -35,15 +35,31 @@ public class CameraController : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             targetIndex = (targetIndex + 1) % target.Length;
             actualTarget = target[targetIndex];
+            if(actualTarget.CompareTag("BigSatelit"))
+            {
+                minDistance = 0.75f;
+            }
+            else
+            {
+                minDistance = 0.4f;
+            }
         }
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKeyDown(KeyCode.A)|| Input.GetKeyDown(KeyCode.LeftArrow))
         {
             targetIndex = (targetIndex - 1 + target.Length) % target.Length;
             actualTarget = target[targetIndex];
+            if (actualTarget.CompareTag("BigSatelit"))
+            {
+                minDistance = 0.75f;
+            }
+            else
+            {
+                minDistance = 0.4f;
+            }
         }
     }
     private void HandleInput()
@@ -60,16 +76,6 @@ public class CameraController : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         distance -= scroll * zoomSpeed;
         distance  = Mathf.Clamp(distance, minDistance, maxDistance);
-
-        // Ajustar velocidad de simulación con + / -
-        if (simulator != null)
-        {
-            if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
-                simulator.timeScale = Mathf.Min(simulator.timeScale * 2f, 100f);
-
-            if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
-                simulator.timeScale = Mathf.Max(simulator.timeScale * 0.5f, 0.1f);
-        }
     }
 
     private void FollowTarget()
