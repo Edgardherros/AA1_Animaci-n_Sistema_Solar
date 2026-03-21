@@ -34,6 +34,11 @@ public class GravitySimulator : MonoBehaviour
             foreach (var body in planets) body.UpdateVelocity(subDt);
         }
         if (ui != null) ui.UpdateTime(dt);
+
+        for(int i = 0; i < planets.Length; i++)
+        {
+            planets[i].UpdateRotation(timeScale);
+        }
     }
 
     private void ComputeGravity()
