@@ -1,12 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Controlador de cámara orbital con zoom y seguimiento de planetas.
-/// - Clic derecho + arrastrar: rotar cámara.
-/// - Scroll de ratón: zoom.
-/// - Teclas 0-8: seguir un planeta concreto (0 = vista libre centrada en el Sol).
-/// - Teclas +/-: ajustar timeScale de la simulación.
-/// </summary>
 public class CameraController : MonoBehaviour
 {
     [Header("Referencias")]
@@ -21,7 +14,9 @@ public class CameraController : MonoBehaviour
     public float maxDistance = 80f;
 
     [Header("Seguimiento")]
-    public Transform target; // cuerpo que sigue la cámara
+    public Transform[] target; // cuerpo que sigue la cámara
+    private Transform actualTarget;
+    private int targetIndex = 0;
 
     // Estado interno
     private float distance    = 15f;
@@ -29,29 +24,32 @@ public class CameraController : MonoBehaviour
     private float pitch       = 30f;
     private Vector3 offset;
 
-    void Start()
-    {
-        // Si no hay target explícito, buscar el Sol (el objeto más masivo)
-        if (target == null)
-        {
-            var bodies = FindObjectsOfType<CelestialBody>();
-            float maxMass = 0f;
-            foreach (var b in bodies)
-            {
-                if (b.mass > maxMass) { maxMass = b.mass; target = b.transform; }
-            }
-        }
-    }
-
     void LateUpdate()
     {
         HandleInput();
         FollowTarget();
     }
-
+    private void Start()
+    {
+        if (target.Length > 0)
+            actualTarget = target[0];
+    }
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.D) && actualTarget != target[targetIndex])
+        {
+            targetIndex = (targetIndex + 1) % target.Length;
+            actualTarget = target[targetIndex];
+        }
+        if(Input.GetKeyDown(KeyCode.A) && actualTarget != target[targetIndex])
+        {
+            targetIndex = (targetIndex - 1 + target.Length) % target.Length;
+            actualTarget = target[targetIndex];
+        }
+    }
     private void HandleInput()
     {
-        // ── Rotación con clic derecho ────────────────────────────────────────
+        // Rotación con clic derecho
         if (Input.GetMouseButton(1))
         {
             yaw   += Input.GetAxis("Mouse X") * rotationSpeed;
@@ -59,12 +57,12 @@ public class CameraController : MonoBehaviour
             pitch  = Mathf.Clamp(pitch, 5f, 89f);
         }
 
-        // ── Zoom con rueda del ratón ─────────────────────────────────────────
+        // Zoom con rueda del ratón 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         distance -= scroll * zoomSpeed;
         distance  = Mathf.Clamp(distance, minDistance, maxDistance);
 
-        // ── Ajustar velocidad de simulación con + / - ────────────────────────
+        // Ajustar velocidad de simulación con + / -
         if (simulator != null)
         {
             if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
@@ -81,11 +79,11 @@ public class CameraController : MonoBehaviour
         // Posición de la cámara en coordenadas esféricas alrededor del target
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
         Vector3 dir = rotation * Vector3.back;
-        transform.position = target.position + dir * distance;
-        transform.LookAt(target.position);
+        transform.position = actualTarget.position + dir * distance;
+        transform.LookAt(actualTarget.position);
     }
 
-    // ── GUI de información ───────────────────────────────────────────────────
+    // GUI de información
     void OnGUI()
     {
         GUI.color = Color.white;

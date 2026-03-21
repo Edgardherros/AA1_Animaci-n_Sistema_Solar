@@ -2,55 +2,41 @@ using UnityEngine;
 
 public class CelestialSimulator : MonoBehaviour
 {
-    [Header("Earth properties")]
-
-    private Vector3 position;
-    private Vector3 velocity;
-    private Vector3 accelleration;
-    private Vector3 prevAcceleration;
-
     [Header("Dynamics setup")]
+    public Vector3 initialPosition = new Vector3(1, 0, 0);
+    public Vector3 initialVelocity = new Vector3(0, 0, 6.28f);
+    public float mass = 3e-6f;
 
-    private float gravityMassConstant = 4 * Mathf.PI * Mathf.PI;
-    public Vector3 initialPosition = new Vector3(0, 0);
-    public Vector3 initialVelocity = new Vector3(0, 0,0);
-
-    public float mass = 0.01f;
+    private Vector3 velocity;
+    private Vector3 currentAcceleration;
+    private Vector3 nextAcceleration;
 
     void Start()
     {
-        position = initialPosition;
+        transform.position = initialPosition;
         velocity = initialVelocity;
-
-        transform.position = position;
+        currentAcceleration = Vector3.zero;
+        nextAcceleration = Vector3.zero;
     }
-    public void UpdateVelocityVerlet(float dt)
+
+    public void PrepareStep()
     {
-       // accelleration = CalculateAcceleration(position);
-        transform.position += velocity * dt + 0.5f * accelleration * dt * dt;
-
-        velocity += 0.5f * (prevAcceleration + accelleration) * dt;
-
-        prevAcceleration = accelleration;
-
-        accelleration = Vector3.zero;
+        currentAcceleration = nextAcceleration;
+        nextAcceleration = Vector3.zero;
     }
+
+    public void UpdatePosition(float dt)
+    {
+        transform.position += velocity * dt + 0.5f * currentAcceleration * dt * dt;
+    }
+
     public void AddForce(Vector3 force)
     {
-        accelleration += force / mass;
+        nextAcceleration += force / mass;
     }
-    Vector2 CalculateAcceleration(Vector2 position)
+
+    public void UpdateVelocity(float dt)
     {
-
-        Vector2 newAcceleration;
-
-        float distanceSquared = position.magnitude * position.magnitude;
-        Vector2 unitVecor = position.normalized;
-        newAcceleration = -(gravityMassConstant / distanceSquared) * unitVecor;
-        return newAcceleration;
+        velocity += 0.5f * (currentAcceleration + nextAcceleration) * dt;
     }
-
-
-
-
 }
