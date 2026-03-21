@@ -6,7 +6,7 @@ public class GravitySimulator : MonoBehaviour
     public const float G = 39.478f;
 
     [Header("Simulación")]
-    [Range(0.1f, 10000f)]
+    [Range(1f, 365)]
     public float timeScale = 1f;
 
     [Range(1, 20)]
