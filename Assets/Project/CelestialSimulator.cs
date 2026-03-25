@@ -21,6 +21,7 @@ public class CelestialSimulator : MonoBehaviour
         nextAcceleration = Vector3.zero;
     }
 
+    // Verlet
     public void PrepareStep()
     {
         currentAcceleration = nextAcceleration;

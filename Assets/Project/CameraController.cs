@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class CameraController : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class CameraController : MonoBehaviour
     private float yaw = 0f;
     private float pitch = 30f;
 
+    public TextMeshProUGUI currentCameraPlanet;
+    private string cameraText = "Camera fixed on: ";
+
     void LateUpdate()
     {
         HandleInput();
@@ -32,6 +36,9 @@ public class CameraController : MonoBehaviour
     {
         if (target.Length > 0)
             actualTarget = target[0];
+
+        currentCameraPlanet.text = cameraText + actualTarget.name;
+        
     }
     private void Update()
     {
@@ -47,6 +54,7 @@ public class CameraController : MonoBehaviour
             {
                 minDistance = 0.4f;
             }
+            currentCameraPlanet.text = cameraText + actualTarget.name;
         }
         if(Input.GetKeyDown(KeyCode.A)|| Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -60,6 +68,7 @@ public class CameraController : MonoBehaviour
             {
                 minDistance = 0.4f;
             }
+            currentCameraPlanet.text = cameraText + actualTarget.name;
         }
     }
     private void HandleInput()
